@@ -1,3 +1,14 @@
+import { styled } from '@styles/index'
+
 export default function Home() {
-  return <h1>Hello World</h1>
+  return (
+    <div>
+      <Button>AAAAAA</Button>
+    </div>
+  )
 }
+
+const Button = styled('button', {
+  backgroundColor: '$green500',
+  padding: '10px 20px',
+})
