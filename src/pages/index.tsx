@@ -1,14 +1,28 @@
-import { styled } from '@styles/index'
+import * as S from '@styles/pages/home'
+import Image from 'next/image'
+
+import shirt1 from '@assets/shirts/1.png'
 
 export default function Home() {
   return (
-    <div>
-      <Button>AAAAAA</Button>
-    </div>
+    <S.HomeContainer>
+      <S.Product>
+        <Image src={shirt1} alt="" width={520} height={480}></Image>
+
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </S.Product>
+
+      <S.Product>
+        <Image src={shirt1} alt="" width={520} height={480}></Image>
+
+        <footer>
+          <strong>Camiseta X</strong>
+          <span>R$ 79,90</span>
+        </footer>
+      </S.Product>
+    </S.HomeContainer>
   )
 }
-
-const Button = styled('button', {
-  backgroundColor: '$green500',
-  padding: '10px 20px',
-})
