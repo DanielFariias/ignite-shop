@@ -10,6 +10,7 @@ import { stripe } from '@lib/stripe'
 import Stripe from 'stripe'
 import { currencyFormatter } from '../utils/formatter'
 import Link from 'next/link'
+import Head from 'next/head'
 
 interface IHomeProps {
   products: {
@@ -29,26 +30,31 @@ export default function Home({ products }: IHomeProps) {
   })
 
   return (
-    <S.HomeContainer ref={sliderRef} className="keen-slider">
-      {products?.map((product) => {
-        return (
-          <Link
-            href={`/product/${product.id}`}
-            key={product.id}
-            prefetch={false}
-          >
-            <S.Product className="keen-slider__slide">
-              <Image src={product.imageUrl} alt="" width={520} height={480} />
+    <>
+      <Head>
+        <title>Home | Ignite Shop</title>
+      </Head>
+      <S.HomeContainer ref={sliderRef} className="keen-slider">
+        {products?.map((product) => {
+          return (
+            <Link
+              href={`/product/${product.id}`}
+              key={product.id}
+              prefetch={false}
+            >
+              <S.Product className="keen-slider__slide">
+                <Image src={product.imageUrl} alt="" width={520} height={480} />
 
-              <footer>
-                <strong>{product.title}</strong>
-                <span>{product.price}</span>
-              </footer>
-            </S.Product>
-          </Link>
-        )
-      })}
-    </S.HomeContainer>
+                <footer>
+                  <strong>{product.title}</strong>
+                  <span>{product.price}</span>
+                </footer>
+              </S.Product>
+            </Link>
+          )
+        })}
+      </S.HomeContainer>
+    </>
   )
 }
 

@@ -6,11 +6,12 @@ import Stripe from 'stripe'
 import Image from 'next/image'
 import axios from 'axios'
 import { useState } from 'react'
+import Head from 'next/head'
 
 interface IProductProps {
   product: {
     id: string
-    title: string
+    name: string
     imageUrl: string
     price: string
     description: string
@@ -38,23 +39,33 @@ export default function Product({ product }: IProductProps) {
       setIsCreatingCheckoutSession(false)
     }
   }
+
   return (
-    <S.ProductContainer>
-      <S.ImageContainer>
-        <Image src={product.imageUrl} width={520} height={480} alt="" />
-      </S.ImageContainer>
+    <>
+      <Head>
+        <title>{product.name} | Ignite Shop</title>
+      </Head>
 
-      <S.ProductDetails>
-        <h1>{product.title}</h1>
-        <span>{product.price}</span>
+      <S.ProductContainer>
+        <S.ImageContainer>
+          <Image src={product.imageUrl} width={520} height={480} alt="" />
+        </S.ImageContainer>
 
-        <p>{product.description}</p>
+        <S.ProductDetails>
+          <h1>{product.name}</h1>
+          <span>{product.price}</span>
 
-        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
-          Comprar Agora
-        </button>
-      </S.ProductDetails>
-    </S.ProductContainer>
+          <p>{product.description}</p>
+
+          <button
+            disabled={isCreatingCheckoutSession}
+            onClick={handleBuyProduct}
+          >
+            Comprar Agora
+          </button>
+        </S.ProductDetails>
+      </S.ProductContainer>
+    </>
   )
 }
 
