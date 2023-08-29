@@ -4,6 +4,8 @@ import { stripe } from '@lib/stripe'
 import { currencyFormatter } from '../../utils/formatter'
 import Stripe from 'stripe'
 import Image from 'next/image'
+import axios from 'axios'
+import { useState } from 'react'
 
 interface IProductProps {
   product: {
@@ -12,10 +14,30 @@ interface IProductProps {
     imageUrl: string
     price: string
     description: string
+    defaultPriceId: string
   }
 }
 
 export default function Product({ product }: IProductProps) {
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
+
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (error) {
+      console.log(error)
+      setIsCreatingCheckoutSession(false)
+    }
+  }
   return (
     <S.ProductContainer>
       <S.ImageContainer>
@@ -28,7 +50,9 @@ export default function Product({ product }: IProductProps) {
 
         <p>{product.description}</p>
 
-        <button>Comprar Agora</button>
+        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
+          Comprar Agora
+        </button>
       </S.ProductDetails>
     </S.ProductContainer>
   )

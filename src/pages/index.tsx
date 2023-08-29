@@ -21,17 +21,16 @@ interface IHomeProps {
 }
 
 export default function Home({ products }: IHomeProps) {
-  console.log(products)
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2.25,
       spacing: 48,
     },
   })
+
   return (
     <S.HomeContainer ref={sliderRef} className="keen-slider">
       {products?.map((product) => {
-        console.log(product)
         return (
           <Link
             href={`/product/${product.id}`}
