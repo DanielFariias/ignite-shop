@@ -9,6 +9,4 @@ export const HeaderContainer = styled('header', {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-
-  button: {},
 })
