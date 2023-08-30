@@ -54,6 +54,12 @@ export const Product = styled('div', {
     opacity: 0,
     transition: 'all 0.2s ease-in-out',
 
+    div: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+    },
+
     strong: {
       fontSize: '$lg',
     },

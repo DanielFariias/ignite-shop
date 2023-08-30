@@ -9,6 +9,7 @@ import { currencyFormatter } from '../utils/formatter'
 import Link from 'next/link'
 import Head from 'next/head'
 import useEmblaCarousel from 'embla-carousel-react'
+import { CartButton } from '@components/cart-button'
 
 interface IHomeProps {
   products: {
@@ -52,8 +53,12 @@ export default function Home({ products }: IHomeProps) {
                       />
 
                       <footer>
-                        <strong>{product.title}</strong>
-                        <span>{product.price}</span>
+                        <div>
+                          <strong>{product.title}</strong>
+                          <span>{product.price}</span>
+                        </div>
+
+                        <CartButton color="green" size="large" />
                       </footer>
                     </S.Product>
                   </Link>

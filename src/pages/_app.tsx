@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import { Header } from '@components/header'
 
 import { globalStyles } from '@styles/global'
+
 import * as S from '@styles/pages/app'
 
 globalStyles()
