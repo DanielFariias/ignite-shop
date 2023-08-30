@@ -1,16 +1,14 @@
 import Image from 'next/image'
 
-import { useKeenSlider } from 'keen-slider/react'
-
 import * as S from '@styles/pages/home'
 
-import 'keen-slider/keen-slider.min.css'
 import { GetStaticProps } from 'next'
 import { stripe } from '@lib/stripe'
 import Stripe from 'stripe'
 import { currencyFormatter } from '../utils/formatter'
 import Link from 'next/link'
 import Head from 'next/head'
+import useEmblaCarousel from 'embla-carousel-react'
 
 interface IHomeProps {
   products: {
@@ -22,11 +20,10 @@ interface IHomeProps {
 }
 
 export default function Home({ products }: IHomeProps) {
-  const [sliderRef] = useKeenSlider({
-    slides: {
-      perView: 2.25,
-      spacing: 48,
-    },
+  const [emblaRef] = useEmblaCarousel({
+    align: 'start',
+    skipSnaps: false,
+    dragFree: true,
   })
 
   return (
@@ -34,26 +31,38 @@ export default function Home({ products }: IHomeProps) {
       <Head>
         <title>Home | Ignite Shop</title>
       </Head>
-      <S.HomeContainer ref={sliderRef} className="keen-slider">
-        {products?.map((product) => {
-          return (
-            <Link
-              href={`/product/${product.id}`}
-              key={product.id}
-              prefetch={false}
-            >
-              <S.Product className="keen-slider__slide">
-                <Image src={product.imageUrl} alt="" width={520} height={480} />
 
-                <footer>
-                  <strong>{product.title}</strong>
-                  <span>{product.price}</span>
-                </footer>
-              </S.Product>
-            </Link>
-          )
-        })}
-      </S.HomeContainer>
+      <div style={{ overflow: 'hidden', width: '100%' }}>
+        <S.HomeContainer>
+          <div className="embla" ref={emblaRef}>
+            <S.SliderContainer className="embla__container container">
+              {products?.map((product) => {
+                return (
+                  <Link
+                    href={`/product/${product.id}`}
+                    key={product.id}
+                    prefetch={false}
+                  >
+                    <S.Product className="embla__slide">
+                      <Image
+                        src={product.imageUrl}
+                        alt=""
+                        width={520}
+                        height={480}
+                      />
+
+                      <footer>
+                        <strong>{product.title}</strong>
+                        <span>{product.price}</span>
+                      </footer>
+                    </S.Product>
+                  </Link>
+                )
+              })}
+            </S.SliderContainer>
+          </div>
+        </S.HomeContainer>
+      </div>
     </>
   )
 }

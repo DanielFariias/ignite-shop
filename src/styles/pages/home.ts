@@ -1,11 +1,19 @@
 import { styled } from '..'
 
 export const HomeContainer = styled('main', {
-  display: 'flex',
   width: '100%',
   maxWidth: 'calc(100vw - ((100vw - 1180px) / 2))',
   marginLeft: 'auto',
-  minHeight: 656,
+})
+
+export const SliderContainer = styled('section', {
+  display: 'flex',
+  gap: '3rem',
+  margin: '0 auto',
+
+  '.embla__slide': {
+    minWidth: '43.5rem',
+  },
 })
 
 export const Product = styled('div', {
@@ -15,6 +23,9 @@ export const Product = styled('div', {
   position: 'relative',
   overflow: 'hidden',
   color: '$white',
+
+  width: '100%',
+  minHeight: 656,
 
   display: 'flex',
   alignItems: 'center',
