@@ -1,4 +1,4 @@
-import { MouseEvent, useContext } from 'react'
+import { MouseEvent, useContext, useEffect, useState } from 'react'
 
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
@@ -17,12 +17,15 @@ import { CartContext, IProduct } from '@contexts/cart-context'
 import { currencyFormatter } from '@utils/formatter'
 
 import * as S from '@styles/pages/home'
+import { ProductSkeleton } from '@components/product-skeletion'
 
 interface IHomeProps {
   products: IProduct[]
 }
 
 export default function Home({ products }: IHomeProps) {
+  const [isLoading, setIsLoading] = useState(true)
+
   const { addToCart, checkIfProductIsInCart } = useContext(CartContext)
 
   const [emblaRef] = useEmblaCarousel({
@@ -31,6 +34,13 @@ export default function Home({ products }: IHomeProps) {
     dragFree: true,
   })
 
+  useEffect(() => {
+    // fake loading to use the skeleton loading from figma
+    const timeOut = setTimeout(() => setIsLoading(false), 1000)
+
+    return () => clearTimeout(timeOut)
+  }, [])
+
   function handleAddToCart(
     e: MouseEvent<HTMLButtonElement>,
     product: IProduct,
@@ -38,8 +48,6 @@ export default function Home({ products }: IHomeProps) {
     e.preventDefault()
     addToCart(product)
   }
-
-  console.log('oi')
 
   return (
     <>
@@ -51,38 +59,49 @@ export default function Home({ products }: IHomeProps) {
         <S.HomeContainer>
           <div className="embla" ref={emblaRef}>
             <S.SliderContainer className="embla__container container">
-              {products?.map((product) => {
-                return (
-                  <Link
-                    href={`/product/${product.id}`}
-                    key={product.id}
-                    prefetch={false}
-                  >
-                    <S.Product className="embla__slide">
-                      <Image
-                        src={product.imageUrl}
-                        alt=""
-                        width={520}
-                        height={480}
-                      />
+              {isLoading ? (
+                <>
+                  <ProductSkeleton className="embla__slide" />
+                  <ProductSkeleton className="embla__slide" />
+                  <ProductSkeleton className="embla__slide" />
+                  <ProductSkeleton className="embla__slide" />
+                </>
+              ) : (
+                <>
+                  {products?.map((product) => {
+                    return (
+                      <Link
+                        href={`/product/${product.id}`}
+                        key={product.id}
+                        prefetch={false}
+                      >
+                        <S.Product className="embla__slide">
+                          <Image
+                            src={product.imageUrl}
+                            alt=""
+                            width={520}
+                            height={480}
+                          />
 
-                      <footer>
-                        <div>
-                          <strong>{product.title}</strong>
-                          <span>{product.price}</span>
-                        </div>
+                          <footer>
+                            <div>
+                              <strong>{product.title}</strong>
+                              <span>{product.price}</span>
+                            </div>
 
-                        <CartButton
-                          color="green"
-                          size="large"
-                          disabled={checkIfProductIsInCart(product.id)}
-                          onClick={(e) => handleAddToCart(e, product)}
-                        />
-                      </footer>
-                    </S.Product>
-                  </Link>
-                )
-              })}
+                            <CartButton
+                              color="green"
+                              size="large"
+                              disabled={checkIfProductIsInCart(product.id)}
+                              onClick={(e) => handleAddToCart(e, product)}
+                            />
+                          </footer>
+                        </S.Product>
+                      </Link>
+                    )
+                  })}
+                </>
+              )}
             </S.SliderContainer>
           </div>
         </S.HomeContainer>
