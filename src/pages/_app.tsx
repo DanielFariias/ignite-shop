@@ -1,19 +1,16 @@
 import type { AppProps } from 'next/app'
 
-import { globalStyles } from '@styles/global'
+import { Header } from '@components/header'
 
-import logoSvg from '@assets/logo.svg'
+import { globalStyles } from '@styles/global'
 import * as S from '@styles/pages/app'
-import Image from 'next/image'
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <S.Container>
-      <S.Header>
-        <Image src={logoSvg} alt="" />
-      </S.Header>
+      <Header />
 
       <Component {...pageProps} />
     </S.Container>
