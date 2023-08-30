@@ -1,31 +1,45 @@
+import { MouseEvent, useContext } from 'react'
+
+import { GetStaticProps } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
+import Head from 'next/head'
+
+import Stripe from 'stripe'
+import useEmblaCarousel from 'embla-carousel-react'
+
+import { stripe } from '@lib/stripe'
+
+import { CartButton } from '@components/cart-button'
+
+import { CartContext, IProduct } from '@contexts/cart-context'
+
+import { currencyFormatter } from '@utils/formatter'
 
 import * as S from '@styles/pages/home'
 
-import { GetStaticProps } from 'next'
-import { stripe } from '@lib/stripe'
-import Stripe from 'stripe'
-import { currencyFormatter } from '../utils/formatter'
-import Link from 'next/link'
-import Head from 'next/head'
-import useEmblaCarousel from 'embla-carousel-react'
-import { CartButton } from '@components/cart-button'
-
 interface IHomeProps {
-  products: {
-    id: string
-    title: string
-    imageUrl: string
-    price: number
-  }[]
+  products: IProduct[]
 }
 
 export default function Home({ products }: IHomeProps) {
+  const { addToCart, checkIfProductIsInCart } = useContext(CartContext)
+
   const [emblaRef] = useEmblaCarousel({
     align: 'start',
     skipSnaps: false,
     dragFree: true,
   })
+
+  function handleAddToCart(
+    e: MouseEvent<HTMLButtonElement>,
+    product: IProduct,
+  ) {
+    e.preventDefault()
+    addToCart(product)
+  }
+
+  console.log('oi')
 
   return (
     <>
@@ -58,7 +72,12 @@ export default function Home({ products }: IHomeProps) {
                           <span>{product.price}</span>
                         </div>
 
-                        <CartButton color="green" size="large" />
+                        <CartButton
+                          color="green"
+                          size="large"
+                          disabled={checkIfProductIsInCart(product.id)}
+                          onClick={(e) => handleAddToCart(e, product)}
+                        />
                       </footer>
                     </S.Product>
                   </Link>
@@ -87,6 +106,9 @@ export const getStaticProps: GetStaticProps = async () => {
       title: product.name,
       imageUrl: product.images[0],
       price: currencyFormatter.format(priceAmount / 100),
+      numberPrice: priceAmount / 100,
+      description: product.description,
+      defaultPriceId: price.id,
     }
   })
 

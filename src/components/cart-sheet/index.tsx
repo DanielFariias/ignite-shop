@@ -2,11 +2,41 @@ import Image from 'next/image'
 
 import { X } from 'phosphor-react'
 
-import shirt1 from '@assets/shirts/2.png'
-
 import * as S from './styles'
+import { useContext, useState } from 'react'
+import { CartContext } from '@contexts/cart-context'
+import axios from 'axios'
 
 export function CartSheet() {
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
+    useState(false)
+
+  const { cartItems, removeCartItem, cartTotal } = useContext(CartContext)
+
+  async function handleCheckout() {
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        products: cartItems,
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (err) {
+      setIsCreatingCheckoutSession(false)
+      alert('Falha ao redirecionar ao checkout!')
+    }
+  }
+
+  const cartQuantity = cartItems.length
+
+  const formattedCartTotal = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(cartTotal)
+
   return (
     <S.CartContent>
       <S.CartClose>
@@ -15,34 +45,47 @@ export function CartSheet() {
       <h2>Sacola de compras</h2>
 
       <section>
-        {/* <p>Parece que seu carrinho está vazio : (</p> */}
+        {cartQuantity <= 0 && <p>Parece que seu carrinho está vazio : (</p>}
 
-        <S.CartProduct>
-          <S.CartProductImage>
-            <Image src={shirt1.src} alt="" width={100} height={93} />
-          </S.CartProductImage>
+        {cartItems.map((product) => {
+          return (
+            <S.CartProduct key={product.id}>
+              <S.CartProductImage>
+                <Image src={product.imageUrl} alt="" width={100} height={93} />
+              </S.CartProductImage>
 
-          <S.CartProductDetails>
-            <p>Rocketseat Ignite Lab React Native 1</p>
-            <strong>R$ 129,90</strong>
-            <button>Remover</button>
-          </S.CartProductDetails>
-        </S.CartProduct>
+              <S.CartProductDetails>
+                <p>{product.title}</p>
+                <strong>{product.price}</strong>
+                <button onClick={() => removeCartItem(product.id)}>
+                  Remover
+                </button>
+              </S.CartProductDetails>
+            </S.CartProduct>
+          )
+        })}
       </section>
 
       <S.CartSummary>
         <S.SummaryDetails>
           <div>
             <span>Quantidade</span>
-            <p>1 item</p>
+            <p>
+              {cartQuantity} {cartQuantity === 1 ? 'item' : 'itens'}
+            </p>
           </div>
           <div>
             <span>Valor total</span>
-            <p>R$ 23,00</p>
+            <p>{formattedCartTotal}</p>
           </div>
         </S.SummaryDetails>
 
-        <button>Finalizar compra</button>
+        <button
+          onClick={handleCheckout}
+          disabled={isCreatingCheckoutSession || cartQuantity <= 0}
+        >
+          Finalizar compra
+        </button>
       </S.CartSummary>
     </S.CartContent>
   )
